@@ -1,0 +1,232 @@
+---
+title: "Theroy DA 20BCE0182"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(ggridges)
+library(plotly)
+data <- mtcars
+gears <- factor(mtcars$gear,levels=c(3,4,5),  
+                      labels=c("3gears", "4gears", "5gears"))  
+
+trans<- factor(mtcars$am,levels=c(0,1),  
+                    labels=c("Automatic","Manual"))  
+cylinder<- factor(mtcars$cyl,levels=c(4,6,8),  
+                     labels=c("4cyl","6cyl","8cyl"))
+view(data)
+```
+Pie chart and histogram
+=== 
+
+Column {data-width=500}
+-----------------------------------------------------------------------
+
+### Pie chart
+
+```{r}
+fig<-plot_ly(data,labels=~gears,type='pie')
+fig<-fig%>%layout(title="Pie chart representing the distribution of mtcars based on gears")
+fig
+```
+Column {data-width=500}
+----------------------------------------
+### Pie chart 
+
+```{r}
+fig<-plot_ly(data,labels=cylinder,type='pie')
+fig<-fig%>%layout(title="Pie chart representing the distribution of mtcars based on number of cylinders")
+fig
+```
+
+### Pie chart 
+
+```{r}
+fig<-plot_ly(data,labels=trans,type='pie')
+fig<-fig%>%layout(title="Pie chart representing the distribution of mtcars based on transmission")
+fig
+```
+Grouped bar plot and stacked bar plot
+===
+
+Column {data-width=500}
+-----------------------------------------------------------------------
+
+### Grouped bar plot
+
+```{r}
+p<-ggplot(data,aes(x=cyl,fill=gears))+geom_bar(position="dodge")+ggtitle("Grouped bar plot of cylinder vs frequency with gears")
+ggplotly(p)
+```
+
+Column {data-width=500}
+-----------------------------------------------------------------------
+### Stacked bar plot
+
+
+```{r}
+p<-ggplot(data,aes(x=cylinder,fill=gears))+geom_bar(position="stack")+ggtitle("Stacked bar plot of cylinder vs count with gears")
+ggplotly(p)
+```
+Scatter plot
+===
+
+Column {data-width=500}
+-----------------------
+
+### Scatter plot
+
+```{r}
+p<-ggplot(data)+geom_point(aes(x=wt,y=mpg,color=cylinder))
+ggplotly(p)
+```
+
+Column {data-width=500}
+-----------------------
+
+### Scatter plot
+
+```{r}
+p<-ggplot(data)+geom_point(aes(x=wt,y=mpg,color=trans))
+ggplotly(p)
+```
+
+Violin plot
+===
+
+Column 
+--------------------------
+
+### Violin plot
+
+
+```{r}
+fig<-plot_ly(data,x=cylinder,y=~hp,type='violin',color="red")
+fig<-fig%>%layout(title="Violin plot between cylinder and horsepower")
+fig
+```
+
+
+Interactive box plot
+===
+
+Column 
+---------------------
+
+### Box plot
+
+
+
+```{r}
+fig<-plot_ly(data,x=~cylinder,y=~hp,type='box')
+fig<-fig%>%layout(title="BOX plot between cylinder and horsepower")
+fig
+```
+
+Tile plot
+===
+
+Column
+-----------------------
+
+### Tile plot
+
+```{r}
+p<-ggplot(as.data.frame(table(data$cyl,
+                           data$gear))) +
+  geom_tile(aes(x = Var1, y = Var2, fill = Freq)) +
+  geom_text(aes(x = Var1, y = Var2, label = Freq)) +
+ 
+  ggtitle("Tiles Plot between cylinder and gears of the car") +
+  xlab("CUT") +
+  ylab("CLARITY") 
+ggplotly(p)
+```
+
+Ridge Plot
+===
+
+column {data-width=700}
+--------------------------------
+
+### ridge plot
+
+```{r}
+ggplot(data) +
+  geom_density_ridges(aes(x = mpg , y = cylinder,
+                          fill = trans), alpha = 0.7) +
+  
+  ggtitle("Ridge Plot") +
+  xlab("Miles Per Gallon") +
+  ylab("Number of Cylinders") 
+
+```
+
+Density Plot
+===
+
+column {data-width=700}
+--------------------------------
+
+### Density plot
+
+```{r}
+p <- ggplot(mtcars) +
+  geom_density(aes(x = hp, 
+                   fill = trans), alpha = 0.7)+
+  
+  ggtitle("Density Plot") +
+  xlab("Gross Horsepower") +
+  ylab("Density") +
+  theme_bw() +
+  theme(axis.text.x = element_text(face = 'bold', size = 10),
+        axis.text.y = element_text(face = 'bold', size = 10))
+
+ggplotly(p) 
+
+```
+
+
+Histogram
+===
+
+column {data-width=700}
+--------------------------------
+
+### histogram
+
+```{r}
+p <- ggplot(mtcars) +
+  geom_histogram(aes(x = mpg, fill = gears)) +
+  xlab("Weight (1000 lbs)") +
+  ggtitle("Histogram of weight") +
+  theme_bw() +
+  theme(axis.text.x = element_text(face = 'bold', size = 10),
+        axis.text.y = element_text(face = 'bold', size = 10))
+
+ggplotly(p)
+
+```
+
+Line Plot
+===
+column {data-width=700}
+--------------------------------
+
+### Line plot
+
+
+```{r}
+p <- ggplot(data) +
+  geom_line(aes(x=hp,y=mpg,color=gears))
+
+ggplotly(p)
+
+```
+
+
